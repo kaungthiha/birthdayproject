@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        #input-container {
+            position: absolute;
+            text-align: center;
+        }
+        #name-input {
+            padding: 10px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+        }
+        .choice-container {
+            display: none;
+            gap: 20px;
+        }
+        .choice-box {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            color: black;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .choice-box:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+<body>
+    <video id="video-bg" autoplay loop muted>
+        <source src="Tranquil_Sky_Drift.mp4" type="video/mp4">
+    </video>
+    <div id="input-container">
+        <input type="text" id="name-input" placeholder="Enter a name...">
+    </div>
+    <div class="choice-container" id="choices">
+        <div class="choice-box" id="cheesy">Cheesy</div>
+        <div class="choice-box" id="silly">Silly</div>
+        <div class="choice-box" id="lily">Lily</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputContainer = document.getElementById("input-container");
+            const nameInput = document.getElementById("name-input");
+            const choices = document.getElementById("choices");
+
+            if (sessionStorage.getItem("entered")) {
+                inputContainer.style.display = "none";
+                choices.style.display = "flex";
+            }
+
+            nameInput.addEventListener("input", function(event) {
+                const inputValue = nameInput.value.trim().toLowerCase();
+                if (["lily", "lily shwe yee"].includes(inputValue)) {
+                    inputContainer.style.display = "none";
+                    choices.style.display = "flex";
+                    sessionStorage.setItem("entered", "true");
+                }
+            });
+
+            document.querySelectorAll(".choice-box").forEach(box => {
+                box.addEventListener("click", function() {
+                    window.location.href = `${this.id}.html`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
