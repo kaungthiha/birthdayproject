@@ -76,10 +76,14 @@
             const choices = document.getElementById("choices");
             const audio = document.getElementById("background-music");
             
-            // Attempt to play audio when page loads
-            audio.play().catch(error => {
-                console.log("Autoplay failed, user interaction required.", error);
-            });
+            function playAudio() {
+                audio.play().catch(error => {
+                    console.log("Autoplay failed, user interaction required.", error);
+                });
+                document.removeEventListener("click", playAudio);
+            }
+            
+            document.addEventListener("click", playAudio);
 
             if (sessionStorage.getItem("entered")) {
                 inputContainer.style.display = "none";
@@ -104,3 +108,4 @@
     </script>
 </body>
 </html>
+
