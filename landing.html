@@ -53,6 +53,10 @@
     </style>
 </head>
 <body>
+    <audio id="background-music" loop>
+        <source src="blue.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
     <video id="video-bg" autoplay loop muted>
         <source src="Tranquil_Sky_Drift.mp4" type="video/mp4">
     </video>
@@ -70,6 +74,12 @@
             const inputContainer = document.getElementById("input-container");
             const nameInput = document.getElementById("name-input");
             const choices = document.getElementById("choices");
+            const audio = document.getElementById("background-music");
+            
+            // Attempt to play audio when page loads
+            audio.play().catch(error => {
+                console.log("Autoplay failed, user interaction required.", error);
+            });
 
             if (sessionStorage.getItem("entered")) {
                 inputContainer.style.display = "none";
