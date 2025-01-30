@@ -15,6 +15,7 @@
             background: black;
             color: white;
             font-family: Arial, sans-serif;
+            text-align: center;
         }
         #video-bg {
             position: fixed;
@@ -25,24 +26,36 @@
             object-fit: cover;
             z-index: -1;
         }
+        #message-container {
+            position: absolute;
+            font-size: 28px;
+            font-weight: bold;
+            max-width: 80%;
+        }
         #input-container {
             position: absolute;
             text-align: center;
+            display: none;
         }
         #name-input {
-            padding: 10px;
-            font-size: 20px;
+            background: transparent;
+            font-weight: bold;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
         }
         .choice-container {
             display: none;
             gap: 20px;
         }
         .choice-box {
+            background: transparent;
+            color: white;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            color: black;
             border-radius: 10px;
             cursor: pointer;
             transition: 0.3s;
@@ -60,6 +73,7 @@
     <video id="video-bg" autoplay loop muted>
         <source src="Tranquil_Sky_Drift.mp4" type="video/mp4">
     </video>
+    <div id="message-container">HI</div>
     <div id="input-container">
         <input type="text" id="name-input" placeholder="who dis">
     </div>
@@ -71,10 +85,31 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const messageContainer = document.getElementById("message-container");
             const inputContainer = document.getElementById("input-container");
             const nameInput = document.getElementById("name-input");
             const choices = document.getElementById("choices");
             const audio = document.getElementById("background-music");
+            
+            let clickCount = 0;
+            const messages = [
+                "HI",
+                "I know how you like being appreciated- shoutout that BURSA birthday post- and so I wanted to do something  in my own way since I'm not that good w/ hands + you've blocked me everywhere anyhow :3",
+                "If you tap the screen, there'll be three boxes. Pick one for a different way to early-celebrate you! Only one choice though- can't be too greedy ;)",
+                "Just to make sure this is for who I want it to, tell me who you are."
+            ];
+            
+            function advanceMessage() {
+                clickCount++;
+                if (clickCount < messages.length) {
+                    messageContainer.innerText = messages[clickCount];
+                } else if (clickCount === messages.length) {
+                    messageContainer.style.display = "none";
+                    inputContainer.style.display = "block";
+                }
+            }
+            
+            document.addEventListener("click", advanceMessage);
             
             function playAudio() {
                 audio.play().catch(error => {
@@ -84,8 +119,8 @@
             }
             
             document.addEventListener("click", playAudio);
-
-            if (sessionStorage.getItem("entered")) {
+            
+            if (sessionStorage.getItem("entered") === "true") {
                 inputContainer.style.display = "none";
                 choices.style.display = "flex";
             }
@@ -108,4 +143,3 @@
     </script>
 </body>
 </html>
-
