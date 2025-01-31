@@ -1,9 +1,8 @@
-<!-- silly.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=3.0">
     <title>Silly</title>
     <style>
         body {
@@ -15,31 +14,61 @@
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
         }
-        img {
+        img:not(.button) {
             width: 1000px;
             border-radius: 10px;
+            max-width: 90vw;
+            height: auto;
+        }
+        
+        @media screen and (max-width: 1200px) {
+            img:not(.button) {
+                width: 800px;
+            }
+        }
+        
+        @media screen and (max-width: 900px) {
+            img:not(.button) {
+                width: 600px;
+            }
+            .text-box {
+                font-size: 24px;
+            }
+            .final-message {
+                font-size: 48px;
+            }
+        }
+        
+        @media screen and (max-width: 640px) {
+            img:not(.button) {
+                width: 90vw;
+            }
+            .text-box {
+                font-size: 20px;
+            }
+            .final-message {
+                font-size: 36px;
+            }
         }
         .button {
-            width: 50px;
-            height: 50px;
-            background-color: blue;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 200px;
+            height: 200px;
             cursor: pointer;
             transition: 0.3s;
-            color: white;
-            font-size: 16px;
             margin-top: 20px;
         }
         .button:hover {
             background-color: darkblue;
+            transform: scale(1.1);
         }
         .text-box {
             margin-top: 20px;
-            font-size: 24px;
+            font-size: 32px;
+            font-weight: bold;
             text-align: center;
         }
         .container {
@@ -54,66 +83,112 @@
             align-items: center;
         }
         .final-message {
-            font-size: 48px;
+            font-size: 64px;
             font-weight: bold;
             text-align: center;
+            display: none;
+            padding: 20px;
+        }
+        .hidden {
             display: none;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="main-content">
-        <div class="message">Happy Birthday Butthead. 23 and silly.</div>
+    <audio id="silly-music" loop>
+        <source src="blue.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <div id="start-message" class="text-box">So you've chosen silly. Press anywhere to begin.</div>
+    
+    <div class="container hidden" id="main-content">
+        <div class="text-box">Happy Birthday Butthead. 23 and silly.</div>
         <img id="sillyImage" src="Playful_Kitty.gif" alt="Playful Kitty">
-        <div class="button" onclick="changeView()">:3</div>
+        <img class="button" id="changeViewBtn" src="button.png" alt="Next">
     </div>
     
-    <div class="container" id="new-content" style="display: none;">
+    <div class="container hidden" id="new-content">
         <div class="content-wrapper">
             <img id="slideshowImage" src="ready.jpg" alt="Slideshow Image">
             <div class="text-box" id="slideshowText">DAMMMMMMN SHE OLD</div>
-            <div class="button" onclick="nextSlide()">:3</div>
+            <img class="button" id="nextSlideBtn" src="button.png" alt="Next">
         </div>
     </div>
     
     <div class="final-message" id="finalMessage">
-        HAPPY BIRTHDAY LILY SHWE YEE RAHHHHHHHHHHHHHHH.
-        Celebrating who you are, where you've gone, and all the things you're going to do.
+        HAPPY BIRTHDAY LILY SHWE YEE RAHHHHHHHHHHHHHHH.<br>
+        Celebrating who you are, where you've gone, and all the things you're going to do.<br>
         23. Let's Go.  
     </div>
 
     <script>
-        const images = ["cows.jpg", "20.jpg","SILLY.jpg","drink.jpg", "fart.jpg", "tgt.jpeg", "killing.jpeg", "SLAY.jpeg" ,"question.png", "accountant.gif", "harvard.jpg"];
-        const texts = [
-            "Befriending cows since 19??",
-            "Touching grass since 20",
-            "Thugging it since 21.",
-            "wine girlie but can't drink",
-            "chee pout but trying to fight it",
-            "but fr tho",
-            "slaying it at 22",
-            "NO RLY THO SLAYING IT AT 22",
-            "hold on.....what comes next?",
-            "BUTTHEAD CPA RULES THE WORLD ANDDDDDDD",
-            " :) "
-        ];
-        let currentIndex = -1;
+        // Define the slideshow content
+        const slideshowContent = {
+            images: ["cows.jpg", "20.jpg", "SILLY.jpg", "drink.jpg", "fart.jpg", "tgt.jpeg", "killing.jpeg", "SLAY.jpeg", "question.png", "accountant.gif", "harvard.jpg"],
+            texts: [
+                "Befriending cows since 19??",
+                "Touching grass since 20",
+                "Thugging it since 21.",
+                "wine girlie but can't drink",
+                "chee pout but trying to fight it",
+                "but fr tho",
+                "slaying it at 22",
+                "NO RLY THO SLAYING IT AT 22",
+                "hold on.....what comes next?",
+                "BUTTHEAD CPA RULES THE WORLD ANDDDDDDD",
+                " :) "
+            ]
+        };
 
-        function changeView() {
-            document.getElementById("main-content").style.display = "none";
-            document.getElementById("new-content").style.display = "flex";
+        // Keep track of the current slide
+        let currentIndex = 0;
+
+        // Get DOM elements
+        const elements = {
+            startMessage: document.getElementById("start-message"),
+            mainContent: document.getElementById("main-content"),
+            newContent: document.getElementById("new-content"),
+            finalMessage: document.getElementById("finalMessage"),
+            audio: document.getElementById("silly-music"),
+            slideshowImage: document.getElementById("slideshowImage"),
+            slideshowText: document.getElementById("slideshowText"),
+            changeViewBtn: document.getElementById("changeViewBtn"),
+            nextSlideBtn: document.getElementById("nextSlideBtn")
+        };
+
+        // Function to begin the experience
+        function beginExperience() {
+            elements.startMessage.style.display = "none";
+            elements.mainContent.classList.remove("hidden");
+            elements.audio.play().catch(error => {
+                console.log("Autoplay failed, user interaction required.", error);
+            });
+            document.removeEventListener("click", beginExperience);
         }
 
+        // Function to change view to slideshow
+        function changeView() {
+            elements.mainContent.style.display = "none";
+            elements.newContent.classList.remove("hidden");
+        }
+
+        // Function to advance to next slide
         function nextSlide() {
             currentIndex++;
-            if (currentIndex < images.length) {
-                document.getElementById("slideshowImage").src = images[currentIndex];
-                document.getElementById("slideshowText").innerText = texts[currentIndex];
+            if (currentIndex < slideshowContent.images.length) {
+                elements.slideshowImage.src = slideshowContent.images[currentIndex];
+                elements.slideshowText.innerText = slideshowContent.texts[currentIndex];
             } else {
-                document.getElementById("new-content").style.display = "none";
-                document.getElementById("finalMessage").style.display = "block";
+                elements.newContent.style.display = "none";
+                elements.finalMessage.style.display = "block";
             }
         }
+
+        // Add event listeners
+        document.addEventListener("click", beginExperience);
+        elements.changeViewBtn.addEventListener("click", changeView);
+        elements.nextSlideBtn.addEventListener("click", nextSlide);
     </script>
 </body>
 </html>
