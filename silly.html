@@ -38,7 +38,20 @@
             .text-box {
                 font-size: 24px;
             }
-            .final-message {
+            .background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            display: none;
+            object-fit: cover;
+        }
+        
+        .final-message {
                 font-size: 48px;
             }
         }
@@ -82,12 +95,21 @@
             flex-direction: column;
             align-items: center;
         }
+        @keyframes zoomInOut {
+            0% { transform: scale(0.5); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(0.8); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .final-message {
             font-size: 64px;
             font-weight: bold;
             text-align: center;
             display: none;
             padding: 20px;
+            animation: zoomInOut 2s ease-in-out;
         }
         .hidden {
             display: none;
@@ -95,31 +117,38 @@
     </style>
 </head>
 <body>
+    <video class="background-video" id="fireworksVideo" loop>
+        <source src="fireworks.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
     <audio id="silly-music" loop>
-        <source src="blue.mp3" type="audio/mp3">
+        <source src="cat.mp3" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
     
-    <div id="start-message" class="text-box">So you've chosen silly. Press anywhere to begin.</div>
-    
-    <div class="container hidden" id="main-content">
-        <div class="text-box">Happy Birthday Butthead. 23 and silly.</div>
-        <img id="sillyImage" src="Playful_Kitty.gif" alt="Playful Kitty">
-        <img class="button" id="changeViewBtn" src="button.png" alt="Next">
-    </div>
-    
-    <div class="container hidden" id="new-content">
-        <div class="content-wrapper">
-            <img id="slideshowImage" src="ready.jpg" alt="Slideshow Image">
-            <div class="text-box" id="slideshowText">DAMMMMMMN SHE OLD</div>
-            <img class="button" id="nextSlideBtn" src="button.png" alt="Next">
+    <div class="content-container">
+        <div id="start-message" class="text-box">So you've chosen silly. Press anywhere to begin.</div>
+        
+        <div class="container hidden" id="main-content">
+            <div class="text-box">Happy Birthday Butthead. 23 and silly.</div>
+            <img id="sillyImage" src="Playful_Kitty.gif" alt="Playful Kitty">
+            <img class="button" id="changeViewBtn" src="button.png" alt="Next">
         </div>
-    </div>
-    
-    <div class="final-message" id="finalMessage">
-        HAPPY BIRTHDAY LILY SHWE YEE RAHHHHHHHHHHHHHHH.<br>
-        Celebrating who you are, where you've gone, and all the things you're going to do.<br>
-        23. Let's Go.  
+        
+        <div class="container hidden" id="new-content">
+            <div class="content-wrapper">
+                <img id="slideshowImage" src="ready.jpg" alt="Slideshow Image">
+                <div class="text-box" id="slideshowText">DAMMMMMMN SHE OLD</div>
+                <img class="button" id="nextSlideBtn" src="button.png" alt="Next">
+            </div>
+        </div>
+        
+        <div class="final-message" id="finalMessage">
+            HAPPY BIRTHDAY LILY SHWE YEE RAHHHHHHHHHHHHHHH.<br>
+            Celebrating who you are, where you've gone, and all the things you're going to do.<br>
+            23. Let's Go.  
+        </div>
     </div>
 
     <script>
@@ -151,6 +180,7 @@
             newContent: document.getElementById("new-content"),
             finalMessage: document.getElementById("finalMessage"),
             audio: document.getElementById("silly-music"),
+            fireworksVideo: document.getElementById("fireworksVideo"),
             slideshowImage: document.getElementById("slideshowImage"),
             slideshowText: document.getElementById("slideshowText"),
             changeViewBtn: document.getElementById("changeViewBtn"),
@@ -182,6 +212,15 @@
             } else {
                 elements.newContent.style.display = "none";
                 elements.finalMessage.style.display = "block";
+                // Start fireworks video
+                elements.fireworksVideo.style.display = "block";
+                elements.fireworksVideo.play().catch(error => {
+                    console.log("Video autoplay failed, user interaction required.", error);
+                });
+                // Reset the animation when showing the message
+                elements.finalMessage.style.animation = "none";
+                elements.finalMessage.offsetHeight; // Trigger reflow
+                elements.finalMessage.style.animation = "zoomInOut 2s ease-in-out";
             }
         }
 
